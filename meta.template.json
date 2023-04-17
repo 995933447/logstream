@@ -1,0 +1,14 @@
+{
+  "base_dir": "D:\\log",
+  "idx_file_max_item_num": 1000,
+  "data_file_max_size": "100M",
+  "mem_max_size": "120M",
+  "max_concurrent_forward": 20,
+  "discovery_file_cache_proxy":{
+    "dir": "D:\\dispatch",
+    "connection": "etcd"
+  },
+  "compress_topics": [],
+  "black_topics": [],
+  "white_topics": []
+}
