@@ -6,4 +6,8 @@ import (
 	"github.com/995933447/std-go/print"
 )
 
-var Logger log.Logger = log.NewLogger(loggerwriter.NewStdoutLoggerWriter(print.ColorGreen))
+var Logger *log.Logger
+
+func init() {
+	Logger = log.NewLogger(loggerwriter.NewStdoutLoggerWriter(print.ColorGreen))
+}
