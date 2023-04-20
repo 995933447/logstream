@@ -19,7 +19,7 @@ func TestWriter_Flush(t *testing.T) {
 		return
 	}
 	for i := 0; i < 2; i++ {
-		writer.Write("test_topic", []byte(fmt.Sprintf("hello world:%d times", i)))
+		writer.Write("test_topic2", []byte(fmt.Sprintf("hello world:%d times", i)))
 	}
 	writer.Flush()
 }
@@ -27,7 +27,7 @@ func TestWriter_Flush(t *testing.T) {
 func TestWriter_Exit(t *testing.T) {
 	writer, _ := NewWriter("")
 	for i := 0; i < 1000; i++ {
-		writer.Write("test_topic", []byte(fmt.Sprintf("hello world:%d times", i)))
+		writer.Write("test_topic3", []byte(fmt.Sprintf("hello world:%d times", i)))
 	}
 	writer.Exit()
 }
@@ -35,7 +35,7 @@ func TestWriter_Exit(t *testing.T) {
 func TestWriter_Stop(t *testing.T) {
 	writer, _ := NewWriter("")
 	for i := 0; i < 10000; i++ {
-		writer.Write("test_topic", []byte(fmt.Sprintf("hello world:%d times", i)))
+		writer.Write("test_topic4", []byte(fmt.Sprintf("hello world:%d times", i)))
 	}
 	writer.Stop()
 }
@@ -43,7 +43,7 @@ func TestWriter_Stop(t *testing.T) {
 func TestWriter_Resume(t *testing.T) {
 	writer, _ := NewWriter("")
 	for i := 0; i < 10000; i++ {
-		writer.Write("test_topic", []byte(fmt.Sprintf("hello world:%d times", i)))
+		writer.Write("test_topic5", []byte(fmt.Sprintf("hello world:%d times", i)))
 	}
 	writer.Stop()
 	err := writer.Resume()
@@ -51,7 +51,7 @@ func TestWriter_Resume(t *testing.T) {
 		t.Fatal(err)
 	}
 	for i := 0; i < 10000; i++ {
-		writer.Write("test_topic", []byte(fmt.Sprintf("hello world:%d times", i)))
+		writer.Write("test_topic5", []byte(fmt.Sprintf("hello world:%d times", i)))
 	}
 	writer.Exit()
 	err = writer.Resume()
