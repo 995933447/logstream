@@ -60,6 +60,7 @@ func TestWriter_Flush(t *testing.T) {
 		writer.Write("test_topic2", []byte(fmt.Sprintf("hello world:%d times", i)))
 	}
 	// 把写入的数据同步刷盘(默认刷盘是异步进行的)
+	// 一般情况下让数据异步刷入磁盘即可,除非进程突然推出
 	writer.Flush()
 }
 
