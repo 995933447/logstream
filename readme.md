@@ -13,17 +13,19 @@ topic进行分发,消费端可以实时配置topic黑名单/白名单自定义�
 
 4.大流量服务器接口请求埋点分析。
 
+等等...
+
 ## usage
 
 step1:设置框架配置文件，非windows:/etc/logstream/meta.json 或 windows: C:\logstream\meta.json
 ````
 {
-  "base_dir": "D:\\log", // 事件数据文件落盘位置
-  "idx_file_max_item_num": 1000, // 单个文件可存储事件最大可容纳消息数量，超过则切换新文件
-  "data_file_max_size": "100M", // 单个文件可存储消息最大容量，超过则切换新文件
-  "mem_max_size": "120M", // 消费端程序最大可占用系统内存(保护系统,最大可用内存越大,同时被并发采集事件消费的topic越多,效率越高)
-  "max_concurrent_forward": 20, // 消费端程序回调处理消息最大worker数
-  "compress_topics": [], // 压缩消息存储的topic,可节省磁盘空间
+  "base_dir": "D:\\log", // 事件数据持久化目录
+  "idx_file_max_item_num": 1000000, // 单个文件可存储事件最大可容纳消息数量，超过则切换新文件
+  "data_file_max_size": "1G", // 单个文件可存储消息最大容量，超过则切换新文件
+  "mem_max_size": "200M", // 消费端程序最大可占用系统内存(保护系统,最大可用内存越大,同时被并发采集事件消费的topic越多,效率越高)
+  "max_concurrent_forward": 100, // 消费端程序回调处理消息最大worker数
+  "compress_topics": [], // 压缩消息存储的topic,可节持久化目录省磁盘空间
   "black_topics": [], // 黑名单topic,值不为空的话,黑名单内的topic不会被消费
   "white_topics": [] // 白名单topic,值不为空的话,白名单的topic才会被消费
 }
@@ -109,12 +111,13 @@ var (
 )
 // 配置消费处理逻辑
 readStream, err = NewReader("", func(items []*PoppedMsgItem) error {
-	// 一次处理回调中会只返回一个topic中的一批消息
+	// 一次处理回调中会只处理一个topic中的一批事件数据(异步读取历史事件数据,并监听实时产生的事件数据)
+	// 一批次消息最大不超过2M
 	fmt.Println("consume " + items[0].Topic)
 	for _, item := range items {
 		fmt.Println(string(item.Data))
-		// 确认消息已完成,消费逻辑是串行消费的,在一个topic里只有前面一批消息
-		// 消费完才会消费下一批
+		// 确认消息已完成,消费逻辑是串行消费的,
+		// 确认消费完才会消费下一批
 		readStream.ConfirmMsg(item.Topic, item.Seq, item.IdxOffset)
 	}
 	fmt.Println(items[0].Topic+" batch consumed", len(items))
