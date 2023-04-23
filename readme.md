@@ -59,7 +59,7 @@ func TestWriter_Flush(t *testing.T) {
 	for i := 0; i < 2; i++ {
 		writer.Write("test_topic2", []byte(fmt.Sprintf("hello world:%d times", i)))
 	}
-	// 把写入的数据同步刷盘(默认刷盘是异步进行的)
+	// 把write的数据同步刷盘(默认刷盘是异步进行的)
 	// 一般情况下让数据异步刷入磁盘即可,除非进程突然推出
 	writer.Flush()
 }
@@ -69,7 +69,7 @@ func TestWriter_Exit(t *testing.T) {
 	for i := 0; i < 1000; i++ {
 		writer.Write("test_topic3", []byte(fmt.Sprintf("hello world:%d times", i)))
 	}
-	// 退出并把写入的数据同步刷盘(默认刷盘是异步进行的),退出后释放对象资源,并且无法恢复
+	// 退出并把write的数据同步刷盘(默认刷盘是异步进行的),退出后释放对象资源,并且无法恢复
 	writer.Exit()
 }
 
@@ -78,7 +78,7 @@ func TestWriter_Stop(t *testing.T) {
 	for i := 0; i < 10000; i++ {
 		writer.Write("test_topic4", []byte(fmt.Sprintf("hello world:%d times", i)))
 	}
-	// 停止并把写入的数据同步刷盘(默认刷盘是异步进行的),停止后将暂时是否对象资源并且无法写入数据
+	// 停止并把write的数据同步刷盘(默认刷盘是异步进行的),停止后将暂时是否对象资源并且无法写入数据
 	writer.Stop()
 }
 
@@ -104,6 +104,7 @@ func TestWriter_Resume(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
 ````
 ````
 2.数据消费端方法示例：
@@ -131,4 +132,38 @@ if err != nil {
 }
 // 开始消费
 readStream.Start()
+````
+
+api 总结:
+
+writer: 
+````
+异步写入数据
+func (w *Writer) Write(topic string, buf []byte)
+
+把write的数据同步刷盘(默认刷盘是异步进行的),一般情况下让数据异步刷入磁盘即可,除非进程突然推出
+func (w *Writer) Flush()
+
+把write的数据同步刷盘(默认刷盘是异步进行的),并停止接受写入(这里会释放一些内存资源),继续写入会发生阻塞,直到resume
+func (w *Writer) Stop()
+
+恢复已经stopped的writer,继续接受write
+func (w *Writer) Resume() err
+
+把write的数据同步刷盘(默认刷盘是异步进行的),并退出接受写入(完全释放内存资源),继续写入会发生阻塞,无法resume
+func (w *Writer) Exit() 
+````
+reader:
+````
+创建一个读取器,cfgFilePath不指定默认去非
+windows:/etc/logstream/meta.json 或 
+windows: C:\logstream\meta.json读取配
+置,forwarder用于消费处理时间数据
+NewReader(cfgFilePath string, forwarder ForwardFunc) (*Reader, error)
+
+确认消息已完成
+func (*Reader) ConfirmMsg()
+
+开始消费
+func (*Reader) Start()
 ````
