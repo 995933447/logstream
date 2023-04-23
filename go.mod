@@ -1,4 +1,4 @@
-module 995933447/logstream
+module github.com/995933447/logstream
 
 go 1.20
 

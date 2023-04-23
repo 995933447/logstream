@@ -15,6 +15,9 @@ topic进行分发,消费端可以实时配置topic黑名单/白名单自定义�
 
 等等...
 
+## install
+go get github.com/995933447/logstream
+
 ## usage
 
 step1:设置框架配置文件，非windows:/etc/logstream/meta.json 或 windows: C:\logstream\meta.json
