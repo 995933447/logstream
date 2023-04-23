@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	errWriterExited = errors.New("writer already exited")
+	ErrWriterExited = errors.New("writer already exited")
 )
 
 func NewWriter(cfgFilePath string) (*Writer, error) {
@@ -255,7 +255,7 @@ func (w *Writer) Resume() error {
 
 	// already exited, Not allow resume
 	if w.IsExited() {
-		return errWriterExited
+		return ErrWriterExited
 	}
 
 	w.status = runStateRunning

@@ -96,7 +96,8 @@ func TestWriter_Resume(t *testing.T) {
 		writer.Write("test_topic5", []byte(fmt.Sprintf("hello world:%d times", i)))
 	}
 	writer.Exit()
-	// 会返回错误errWriterExited
+	
+	// 退出后无法恢复消费，需要开启新的writer，所这里会返回错误errWriterExited
 	err = writer.Resume()
 	if err != nil {
 		t.Fatal(err)
