@@ -164,6 +164,6 @@ NewReader(cfgFilePath string, forwarder ForwardFunc) (*Reader, error)
 确认消息已完成
 func (*Reader) ConfirmMsg()
 
-开始消费
+开始消费线程
 func (*Reader) Start()
 ````
