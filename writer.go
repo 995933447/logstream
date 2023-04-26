@@ -76,6 +76,7 @@ func watchWriterCfg(writer *Writer, cfg *Cfg, cfgLoader *confloader.Loader) {
 					for _, output := range writer.topicOutputMap {
 						output.close()
 					}
+					writer.topicOutputMap = map[string]*Output{}
 				}
 				writer.opOutputMu.Unlock()
 			}
