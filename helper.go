@@ -301,12 +301,6 @@ func scanDirToParseNextSeq(baseDir, topic string, seq uint64) (uint64, error) {
 func parseMemSizeStrToBytes(size string) (uint32, error) {
 	size = strings.ToUpper(size)
 	switch true {
-	case strings.HasSuffix(size, "B"):
-		sizeVal, err := strconv.ParseUint(strings.TrimRight(size, "B"), 10, 32)
-		if err != nil {
-			return 0, err
-		}
-		return uint32(sizeVal), nil
 	case strings.HasSuffix(size, "KB"), strings.HasSuffix(size, "K"):
 		sizeVal, err := strconv.ParseUint(strings.TrimRight(strings.TrimRight(size, "K"), "KB"), 10, 32)
 		if err != nil {
@@ -325,6 +319,12 @@ func parseMemSizeStrToBytes(size string) (uint32, error) {
 			return 0, err
 		}
 		return uint32(sizeVal) * 1024 * 1024 * 1024, nil
+	case strings.HasSuffix(size, "B"):
+		sizeVal, err := strconv.ParseUint(strings.TrimRight(size, "B"), 10, 32)
+		if err != nil {
+			return 0, err
+		}
+		return uint32(sizeVal), nil
 	}
 	sizeVal, err := strconv.ParseUint(size, 10, 32)
 	if err != nil {

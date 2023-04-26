@@ -140,9 +140,10 @@ func (w *Writer) loop() {
 
 				// blessing for god, never been true
 				if !corrupted {
-					Logger.Debug(nil, errFileCorrupted)
 					continue
 				}
+
+				Logger.Debug(nil, errFileCorrupted)
 
 				if err = output.openNewFile(); err != nil {
 					output.idxFp = nil
