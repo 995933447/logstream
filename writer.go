@@ -73,10 +73,11 @@ func watchWriterCfg(writer *Writer, cfg *Cfg, cfgLoader *confloader.Loader) {
 				writer.compressTopics.reset(cfg.CompressTopics)
 				if writer.baseDir != cfg.BaseDir {
 					writer.baseDir = cfg.BaseDir
-					for _, output := range writer.topicOutputMap {
+					origOutputMap := writer.topicOutputMap
+					writer.topicOutputMap = map[string]*Output{}
+					for _, output := range origOutputMap {
 						output.close()
 					}
-					writer.topicOutputMap = map[string]*Output{}
 				}
 				writer.opOutputMu.Unlock()
 			}
