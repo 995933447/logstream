@@ -187,7 +187,7 @@ func makePendingRcFps(baseDir, topic string) (*os.File, *os.File, error) {
 		}
 
 		if pendingFp != nil && unPendFp != nil {
-			break
+			return pendingFp, unPendFp, nil
 		}
 	}
 

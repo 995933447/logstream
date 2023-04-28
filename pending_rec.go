@@ -237,8 +237,17 @@ func (r *ConsumePendingRec) unPend(pendings []*pendingMsgIdx, onlyUnPendMem bool
 	}
 
 	if r.isEmpty() {
-		//_ = r.pendingFp.Truncate(0)
-		//_ = r.pendingFp.Truncate(0)
+		if err := r.pendingFp.Truncate(0); err == nil {
+			if _, err = r.pendingFp.Seek(0, 0); err != nil {
+				return err
+			}
+		}
+
+		if err := r.unPendFp.Truncate(0); err == nil {
+			if _, err = r.unPendFp.Seek(0, 0); err != nil {
+				return err
+			}
+		}
 	}
 
 	return nil
