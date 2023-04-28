@@ -15,7 +15,7 @@ const (
 	dataFileSuffix  = ".dat"
 	finishRcSuffix  = ".fin"
 	pendingRcSuffix = ".pend"
-	unPendRcSuffix  = ".unPend"
+	unPendRcSuffix  = ".unp"
 )
 
 type runState int

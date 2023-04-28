@@ -178,8 +178,11 @@ func (r *ConsumePendingRec) pending(pendings []*pendingMsgIdx, onlyPendOnMem boo
 		if !ok {
 			pendingIdxSet = map[uint32]struct{}{}
 			r.pendingMsgIdxes[pending.seq] = pendingIdxSet
-		} else if _, ok = pendingIdxSet[pending.idxOffset]; ok {
-			continue
+		} else {
+			if _, ok = pendingIdxSet[pending.idxOffset]; ok {
+				continue
+			}
+			pendingIdxSet[pending.idxOffset] = struct{}{}
 		}
 
 		enqueued = append(enqueued, pending)
@@ -205,8 +208,11 @@ func (r *ConsumePendingRec) unPend(pendings []*pendingMsgIdx, onlyUnPendMem bool
 		if !ok {
 			unPendIdxSet = map[uint32]struct{}{}
 			r.unPendMsgIdxes[pending.seq] = unPendIdxSet
-		} else if _, ok = unPendIdxSet[pending.idxOffset]; ok {
-			return nil
+		} else {
+			if _, ok = unPendIdxSet[pending.idxOffset]; ok {
+				return nil
+			}
+			unPendIdxSet[pending.idxOffset] = struct{}{}
 		}
 		enqueued = append(enqueued, pending)
 	}
