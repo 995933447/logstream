@@ -246,12 +246,12 @@ func (o *Output) openNewFile() error {
 		curSeq++
 	}
 
-	idxFp, err := makeSeqIdxFp(o.baseDir, o.topic, curSeq, os.O_CREATE|os.O_APPEND)
+	idxFp, err := makeSeqIdxFp(o.baseDir, o.topic, curSeq, os.O_CREATE|os.O_WRONLY|os.O_APPEND)
 	if err != nil {
 		return err
 	}
 
-	dataFp, err := makeSeqDataFp(o.baseDir, o.topic, curSeq, os.O_CREATE|os.O_APPEND)
+	dataFp, err := makeSeqDataFp(o.baseDir, o.topic, curSeq, os.O_CREATE|os.O_WRONLY|os.O_APPEND)
 	if err != nil {
 		return err
 	}
