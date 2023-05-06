@@ -58,13 +58,24 @@ func newConsumePendingRec(baseDir, topic string) (*ConsumePendingRec, error) {
 	return rec, nil
 }
 
+func (r *ConsumePendingRec) isConfirmed(seq uint64, idxOffset uint32) bool {
+	if idxSet, ok := r.unPendMsgIdxes[seq]; ok {
+		if _, ok = idxSet[idxOffset]; ok {
+			return true
+		}
+	}
+
+	return false
+}
+
 func (r *ConsumePendingRec) isPending(seq uint64, idxOffset uint32) bool {
-	idxSet, ok := r.pendingMsgIdxes[seq]
-	if !ok {
+	if idxSet, ok := r.pendingMsgIdxes[seq]; !ok {
+		return false
+	} else if _, ok = idxSet[idxOffset]; !ok {
 		return false
 	}
-	_, ok = idxSet[idxOffset]
-	return ok
+
+	return true
 }
 
 func (r *ConsumePendingRec) isEmpty() bool {

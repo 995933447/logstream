@@ -353,23 +353,28 @@ func (c *Consumer) consumeBatch() ([]*PoppedMsgItem, bool, error) {
 		}
 
 		seq, _ := c.finishRec.getWaterMark()
-		items = append(items, &PoppedMsgItem{
-			Topic:     c.topic,
-			IdxOffset: c.nextIdxCursor,
-			Seq:       seq,
-			Data:      data,
-			CreatedAt: int64(createdAt),
-		})
-		pendings = append(pendings, &pendingMsgIdx{
-			seq:       seq,
-			idxOffset: c.nextIdxCursor,
-		})
+
+		if !c.pendingRec.isPending(seq, c.nextIdxCursor) && !c.pendingRec.isConfirmed(seq, c.nextIdxCursor) {
+			pendings = append(pendings, &pendingMsgIdx{
+				seq:       seq,
+				idxOffset: c.nextIdxCursor,
+			})
+
+			items = append(items, &PoppedMsgItem{
+				Topic:     c.topic,
+				IdxOffset: c.nextIdxCursor,
+				Seq:       seq,
+				Data:      data,
+				CreatedAt: int64(createdAt),
+			})
+
+			totalDataBytes += len(data)
+		}
 
 		if isEOF {
 			break
 		}
 
-		totalDataBytes += len(data)
 		c.nextIdxCursor++
 	}
 
