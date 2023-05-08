@@ -161,10 +161,9 @@ func (w *Writer) Exit()
 ````
 reader:
 ````
-创建一个读取器,cfgFilePath不指定默认去非
-windows:/etc/logstream/meta.json 或 
-windows: C:\logstream\meta.json读取配置,
-forwarder用于消费处理时间数据,forward接口定义为func(items []*PoppedMsgItem) error
+创建一个读取器,cfgFilePath不指定默认去非windows:/etc/logstream/meta.json 或 
+windows: C:\logstream\meta.json读取配置,forwarder用于消费处理时间数据,
+forward接口定义为func(items []*PoppedMsgItem) error
 NewReader(cfgFilePath string, forwarder ForwardFunc) (*Reader, error)
 
 确认消息已完成
