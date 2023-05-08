@@ -173,7 +173,7 @@ func makePendingRcFps(baseDir, topic string) (*os.File, *os.File, error) {
 	var pendingFp, unPendFp *os.File
 	for _, file := range files {
 		if pendingFp == nil && strings.HasSuffix(file.Name(), pendingRcSuffix) {
-			pendingFp, err = os.OpenFile(dir+"/"+file.Name(), os.O_CREATE|os.O_RDWR|os.O_RDONLY, os.ModePerm)
+			pendingFp, err = os.OpenFile(dir+"/"+file.Name(), os.O_CREATE|os.O_RDWR|os.O_APPEND, os.ModePerm)
 			if err != nil {
 				return nil, nil, err
 			}
