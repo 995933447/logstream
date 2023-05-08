@@ -136,7 +136,7 @@ func (w *Writer) loop() {
 			for _, output := range w.topicOutputMap {
 				corrupted, err := output.isCorrupted()
 				if err != nil {
-					Logger.Debug(nil, err)
+					Logger.Error(nil, err)
 					continue
 				}
 
@@ -145,7 +145,7 @@ func (w *Writer) loop() {
 					continue
 				}
 
-				Logger.Debug(nil, errFileCorrupted)
+				Logger.Error(nil, errFileCorrupted)
 
 				if err = output.openNewFile(); err != nil {
 					output.idxFp = nil
@@ -157,13 +157,13 @@ func (w *Writer) loop() {
 		case msg := <-w.msgChan:
 			w.opOutputMu.Lock()
 			if err := w.doWriteMost([]*Msg{msg}); err != nil {
-				Logger.Debug(nil, err)
+				Logger.Error(nil, err)
 			}
 			w.opOutputMu.Unlock()
 		case <-w.flushSignCh:
 			w.opOutputMu.Lock()
 			if err := w.doWriteMost(nil); err != nil {
-				Logger.Debug(nil, err)
+				Logger.Error(nil, err)
 			}
 
 			for _, output := range w.topicOutputMap {
