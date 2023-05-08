@@ -116,7 +116,7 @@ func watchReaderCfg(reader *Reader, cfgLoader *confloader.Loader, cfg *Cfg) {
 				reader.whiteTopics.reset(cfg.WhiteTopics)
 				reader.blackTopics.reset(cfg.BlackTopics)
 				if err := reader.init(); err != nil {
-					Logger.Debug(nil, err)
+					Logger.Warn(nil, err)
 				}
 				reader.accessFickleMu.Unlock()
 			}
