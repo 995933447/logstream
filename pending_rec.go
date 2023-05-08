@@ -270,6 +270,7 @@ func (r *ConsumePendingRec) unPend(pendings []*pendingMsgIdx, onlyUnPendMem bool
 			isTruncateFailed = true
 		}
 
+		// compatible windows os
 		if isTruncateFailed {
 			err := r.pendingFp.Close()
 			if err != nil {
