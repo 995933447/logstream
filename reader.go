@@ -79,7 +79,7 @@ func watchReaderCfg(reader *Reader, cfgLoader *confloader.Loader, cfg *Cfg) {
 		for {
 			select {
 			case err := <-refreshCfgErr:
-				Logger.Debug(nil, err.Error())
+				Logger.Debug(nil, err)
 			case <-refreshCfgTk.C:
 				reader.accessFickleMu.Lock()
 				if reader.baseDir != cfg.BaseDir {
@@ -92,7 +92,7 @@ func watchReaderCfg(reader *Reader, cfgLoader *confloader.Loader, cfg *Cfg) {
 					var err error
 					memMaxBytes, err = parseMemSizeStrToBytes(cfg.MemMaxSize)
 					if err != nil {
-						Logger.Debug(nil, err.Error())
+						Logger.Debug(nil, err)
 						break
 					}
 				}
@@ -115,7 +115,7 @@ func watchReaderCfg(reader *Reader, cfgLoader *confloader.Loader, cfg *Cfg) {
 				reader.whiteTopics.reset(cfg.WhiteTopics)
 				reader.blackTopics.reset(cfg.BlackTopics)
 				if err := reader.init(); err != nil {
-					Logger.Debug(nil, err.Error())
+					Logger.Debug(nil, err)
 				}
 				reader.accessFickleMu.Unlock()
 			}
@@ -196,7 +196,7 @@ func (r *Reader) init() error {
 
 			go func() {
 				if err = consumer.subscribe(); err != nil {
-					Logger.Debug(nil, err.Error())
+					Logger.Debug(nil, err)
 				}
 			}()
 
@@ -361,7 +361,15 @@ func (r *Reader) Start() {
 			retryMsgItems = nil
 			forwardCh = nil
 		case msgItems := <-r.retryCh:
-			retryMsgItemsList = append(retryMsgItemsList, msgItems)
+			consumer := r.topicConsumerMap[msgItems[0].Topic]
+			var notConfirmedList []*PoppedMsgItem
+			for _, msgItem := range msgItems {
+				if !consumer.isNotConfirmed(msgItem.Seq, msgItem.IdxOffset) {
+					continue
+				}
+				notConfirmedList = append(notConfirmedList, msgItem)
+			}
+			retryMsgItemsList = append(retryMsgItemsList, notConfirmedList)
 		case <-expandWorkerPoolTk.C:
 			r.accessFickleMu.RLock()
 			r.expandWorkerPool()

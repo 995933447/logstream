@@ -11,9 +11,11 @@ const (
 )
 
 const (
-	idxFileSuffix  = ".idx"
-	dataFileSuffix = ".dat"
-	finishRcSuffix = ".fin"
+	idxFileSuffix   = ".idx"
+	dataFileSuffix  = ".dat"
+	finishRcSuffix  = ".fin"
+	pendingRcSuffix = ".pend"
+	unPendRcSuffix  = ".unp"
 )
 
 type runState int

@@ -94,6 +94,7 @@ func (r *ConsumeWaterMarkRec) refreshAndGetOffset() (uint64, uint32, error) {
 	if err != nil {
 		return 0, 0, err
 	}
+
 	for {
 		if n >= finishWaterMarkBytes {
 			break
@@ -144,6 +145,7 @@ func (r *ConsumeWaterMarkRec) updateWaterMark(seq uint64, idxNum uint32) error {
 	if err != nil {
 		return err
 	}
+
 	for {
 		if n >= finishWaterMarkBytes {
 			break
