@@ -58,6 +58,11 @@ func newConsumePendingRec(baseDir, topic string) (*ConsumePendingRec, error) {
 	return rec, nil
 }
 
+func (r *ConsumePendingRec) syncDisk() {
+	_ = r.pendingFp.Sync()
+	_ = r.unPendFp.Sync()
+}
+
 func (r *ConsumePendingRec) isConfirmed(seq uint64, idxOffset uint32) bool {
 	if idxSet, ok := r.unPendMsgIdxes[seq]; ok {
 		if _, ok = idxSet[idxOffset]; ok {

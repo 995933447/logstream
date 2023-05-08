@@ -119,6 +119,10 @@ func (r *ConsumeWaterMarkRec) getWaterMark() (uint64, uint32) {
 	return r.seq, r.idxNum
 }
 
+func (r *ConsumeWaterMarkRec) syncDisk() {
+	_ = r.fp.Sync()
+}
+
 func (r *ConsumeWaterMarkRec) updateWaterMark(seq uint64, idxNum uint32) error {
 	var err error
 	if seq != r.seq {

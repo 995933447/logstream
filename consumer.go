@@ -131,6 +131,8 @@ func (c *Consumer) subscribe() error {
 	// windows no fsnotify
 	directlyTrySwitchFileTk := time.NewTicker(time.Second * 2)
 	defer directlyTrySwitchFileTk.Stop()
+	syncDiskTk := time.NewTicker(time.Second * 5)
+	defer syncDiskTk.Stop()
 	var needWatchNewFile = true
 	for {
 		needSwitchNewFile, err := c.finishRec.isOffsetsFinishedInSeq()
@@ -181,6 +183,9 @@ func (c *Consumer) subscribe() error {
 		Logger.Debug(nil, c.topic+" loop into select")
 		select {
 		case <-directlyTrySwitchFileTk.C:
+		case <-syncDiskTk.C:
+			c.finishRec.syncDisk()
+			c.pendingRec.syncDisk()
 		case event := <-fileWatcher.Events:
 			Logger.Debug(nil, "watch file changed")
 			if event.Has(fsnotify.Chmod) {
@@ -255,6 +260,8 @@ func (c *Consumer) subscribe() error {
 		}
 	}
 out:
+	c.finishRec.syncDisk()
+	c.pendingRec.syncDisk()
 	return nil
 }
 

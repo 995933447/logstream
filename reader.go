@@ -40,6 +40,7 @@ func NewReader(cfgFilePath string, forwarder ForwardFunc) (*Reader, error) {
 		topicConsumerMap:       map[string]*Consumer{},
 		exitOneSchedWorkerCh:   make(chan struct{}),
 		exitOneForwardWorkerCh: make(chan struct{}),
+		exitSignCh:             make(chan struct{}),
 	}
 
 	if cfg.MemMaxSize != "" {
@@ -146,6 +147,7 @@ type Reader struct {
 	retryCh                chan []*PoppedMsgItem // chan use to retry failed messages
 	exitOneSchedWorkerCh   chan struct{}
 	exitOneForwardWorkerCh chan struct{}
+	exitSignCh             chan struct{}
 }
 
 func (r *Reader) init() error {
@@ -341,6 +343,18 @@ func (r *Reader) Start() {
 	r.createSchedWorkerPool()
 	r.createForwardWorkerPool()
 
+	defer func() {
+		var wg sync.WaitGroup
+		for _, consumer := range r.topicConsumerMap {
+			wg.Add(1)
+			go func(consumer *Consumer) {
+				defer wg.Done()
+				consumer.unsubscribe()
+			}(consumer)
+		}
+		wg.Wait()
+	}()
+
 	// schedule retry messages and dynamically controller worker pool size
 	expandWorkerPoolTk := time.NewTicker(time.Second * 3)
 	defer expandWorkerPoolTk.Stop()
@@ -374,6 +388,8 @@ func (r *Reader) Start() {
 			r.accessFickleMu.RLock()
 			r.expandWorkerPool()
 			r.accessFickleMu.RUnlock()
+		case <-r.exitSignCh:
+			return
 		}
 	}
 }
@@ -384,4 +400,8 @@ func (r *Reader) ConfirmMsg(topic string, seq uint64, idxOffset uint32) {
 		return
 	}
 	consumer.confirmMsg(seq, idxOffset)
+}
+
+func (r *Reader) Exit() {
+	r.exitSignCh <- struct{}{}
 }

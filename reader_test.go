@@ -2,6 +2,8 @@ package logstream
 
 import (
 	"fmt"
+	"os"
+	"os/signal"
 	"testing"
 )
 
@@ -22,6 +24,13 @@ func TestReader_Start(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
+
+	go func() {
+		signCh := make(chan os.Signal)
+		signal.Notify(signCh)
+		<-signCh
+		readStream.Exit()
+	}()
 
 	readStream.Start()
 }
