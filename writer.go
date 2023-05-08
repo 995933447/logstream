@@ -59,7 +59,7 @@ func watchWriterCfg(writer *Writer, cfg *Cfg, cfgLoader *confloader.Loader) {
 		for {
 			select {
 			case err := <-refreshCfgErr:
-				Logger.Debug(nil, err)
+				Logger.Warn(nil, err)
 			case <-writer.unwatchCfgSignCh:
 			case <-refreshCfgTk.C:
 				writer.opOutputMu.Lock()

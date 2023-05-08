@@ -80,7 +80,7 @@ func watchReaderCfg(reader *Reader, cfgLoader *confloader.Loader, cfg *Cfg) {
 		for {
 			select {
 			case err := <-refreshCfgErr:
-				Logger.Debug(nil, err)
+				Logger.Warn(nil, err)
 			case <-refreshCfgTk.C:
 				reader.accessFickleMu.Lock()
 				if reader.baseDir != cfg.BaseDir {
