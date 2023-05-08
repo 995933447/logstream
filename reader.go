@@ -277,7 +277,7 @@ func (r *Reader) runSchedWorker() {
 				r.accessFickleMu.RUnlock()
 				popped, ok, err := consumer.consumeBatch()
 				if err != nil {
-					Logger.Debug(nil, err)
+					Logger.Error(nil, err)
 					continue
 				}
 				if !ok {
