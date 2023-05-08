@@ -66,7 +66,7 @@ func watchWriterCfg(writer *Writer, cfg *Cfg, cfgLoader *confloader.Loader) {
 				var err error
 				writer.dataFileMaxBytes, err = parseMemSizeStrToBytes(cfg.DataFileMaxSize)
 				if err != nil {
-					Logger.Debug(nil, err)
+					Logger.Warn(nil, err)
 					continue
 				}
 				writer.idxFileMaxItemNum = cfg.IdxFileMaxItemNum
