@@ -198,7 +198,7 @@ func (r *Reader) init() error {
 
 			go func() {
 				if err = consumer.subscribe(); err != nil {
-					Logger.Debug(nil, err)
+					Logger.Error(nil, err)
 				}
 			}()
 
