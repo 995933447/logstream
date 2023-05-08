@@ -120,7 +120,9 @@ func (r *ConsumeWaterMarkRec) getWaterMark() (uint64, uint32) {
 }
 
 func (r *ConsumeWaterMarkRec) syncDisk() {
-	_ = r.fp.Sync()
+	if err := r.fp.Sync(); err != nil {
+		Logger.Warn(nil, err)
+	}
 }
 
 func (r *ConsumeWaterMarkRec) updateWaterMark(seq uint64, idxNum uint32) error {
