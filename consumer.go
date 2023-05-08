@@ -98,6 +98,25 @@ func (c *Consumer) switchNextSeqFile() error {
 		return err
 	}
 
+	origIdxFp := c.idxFp
+	origDataFp := c.dataFp
+	go func() {
+		_ = origIdxFp.Sync()
+		_ = origDataFp.Sync()
+		_ = origIdxFp.Close()
+		_ = origDataFp.Close()
+
+		err = os.Remove(origIdxFp.Name())
+		if err != nil {
+			Logger.Error(nil, err)
+		}
+
+		err = os.Remove(origDataFp.Name())
+		if err != nil {
+			Logger.Error(nil, err)
+		}
+	}()
+
 	c.idxFp = idxFp
 	c.dataFp = dataFp
 	c.nextIdxCursor = 0
