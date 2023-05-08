@@ -253,16 +253,38 @@ func (r *ConsumePendingRec) unPend(pendings []*pendingMsgIdx, onlyUnPendMem bool
 	}
 
 	if r.isEmpty() {
+		var isTruncateFailed bool
 		if err := r.pendingFp.Truncate(0); err == nil {
 			if _, err = r.pendingFp.Seek(0, 0); err != nil {
 				return err
 			}
+		} else {
+			isTruncateFailed = true
 		}
 
 		if err := r.unPendFp.Truncate(0); err == nil {
 			if _, err = r.unPendFp.Seek(0, 0); err != nil {
 				return err
 			}
+		} else {
+			isTruncateFailed = true
+		}
+
+		if isTruncateFailed {
+			err := r.pendingFp.Close()
+			if err != nil {
+				return err
+			}
+
+			err = r.unPendFp.Close()
+			if err != nil {
+				return err
+			}
+
+			_ = os.Truncate(r.pendingFp.Name(), 0)
+			_ = os.Truncate(r.unPendFp.Name(), 0)
+
+			r.pendingFp, r.unPendFp, err = makePendingRcFps(r.baseDir, r.topic)
 		}
 	}
 
