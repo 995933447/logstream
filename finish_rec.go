@@ -49,7 +49,7 @@ func newConsumeWaterMarkRec(baseDir, topic string) (*ConsumeWaterMarkRec, error)
 		return nil, err
 	}
 
-	rec.idxFp, err = makeSeqIdxFp(baseDir, topic, rec.seq, os.O_RDONLY)
+	rec.idxFp, err = makeSeqIdxFp(baseDir, topic, rec.seq, os.O_CREATE|os.O_RDONLY)
 	if err != nil {
 		return nil, err
 	}
