@@ -244,7 +244,7 @@ func scanDirToParseOldestSeq(baseDir, topic string) (uint64, error) {
 		return 0, err
 	}
 
-	var oldestSeq uint64 = 1
+	var oldestSeq uint64 = 0
 	for _, file := range files {
 		seqStr, ok := parseFileSeqStr(file)
 		if !ok {
@@ -256,9 +256,17 @@ func scanDirToParseOldestSeq(baseDir, topic string) (uint64, error) {
 			return 0, err
 		}
 
+		if oldestSeq == 0 {
+			oldestSeq = curSeq
+		}
+
 		if curSeq < oldestSeq {
 			oldestSeq = curSeq
 		}
+	}
+
+	if oldestSeq == 0 {
+		oldestSeq = 1
 	}
 
 	return oldestSeq, nil
