@@ -98,6 +98,7 @@ type Msg struct {
 	topic      string
 	buf        []byte
 	compressed []byte
+	retryAt    uint32
 }
 
 type Writer struct {

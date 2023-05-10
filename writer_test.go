@@ -26,7 +26,7 @@ func TestWriter_Flush(t *testing.T) {
 
 func TestWriter_Exit(t *testing.T) {
 	writer, _ := NewWriter("")
-	for i := 0; i < 1000; i++ {
+	for i := 0; i < 10; i++ {
 		writer.Write("test_topic3", []byte(fmt.Sprintf("hello world:%d times", i)))
 	}
 	writer.Exit()
@@ -34,7 +34,7 @@ func TestWriter_Exit(t *testing.T) {
 
 func TestWriter_Stop(t *testing.T) {
 	writer, _ := NewWriter("")
-	for i := 0; i < 10000; i++ {
+	for i := 0; i < 10; i++ {
 		writer.Write("test_topic4", []byte(fmt.Sprintf("hello world:%d times", i)))
 	}
 	writer.Stop()

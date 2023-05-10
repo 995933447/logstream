@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/signal"
 	"testing"
+	"time"
 )
 
 func TestReader_Start(t *testing.T) {
@@ -16,7 +17,11 @@ func TestReader_Start(t *testing.T) {
 		fmt.Println("consume " + items[0].Topic)
 		for _, item := range items {
 			fmt.Println(string(item.Data))
-			readStream.ConfirmMsg(item.Topic, item.Seq, item.IdxOffset)
+			fmt.Println("Retry at:", item.RetryAt)
+			fmt.Println("Retry cnt:", item.RetryCnt, " now:", time.Now().Unix())
+			if item.RetryCnt > 5 {
+				readStream.ConfirmMsg(item.Topic, item.Seq, item.IdxOffset)
+			}
 		}
 		fmt.Println(items[0].Topic+" batch consumed", len(items))
 		return nil
