@@ -108,6 +108,7 @@ func (c *Consumer) switchNextSeqFile() error {
 		err = os.Remove(origIdxFp.Name())
 		if err != nil {
 			Logger.Error(nil, err)
+			return
 		}
 
 		err = os.Remove(origDataFp.Name())
