@@ -359,10 +359,13 @@ func (r *Reader) Start() {
 	// schedule retry messages and dynamically controller worker pool size
 	expandWorkerPoolTk := time.NewTicker(time.Second * 3)
 	defer expandWorkerPoolTk.Stop()
+
 	retryTk := time.NewTicker(time.Second)
 	defer retryTk.Stop()
+
+	retryMsgQ := newRetryMsgQueue(nil)
+
 	var (
-		retryMsgQ      retryMsgQueue
 		forwardCh      chan []*PoppedMsgItem
 		realRetryItems []*PoppedMsgItem
 	)
