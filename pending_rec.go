@@ -205,12 +205,6 @@ func (r *ConsumePendingRec) pending(pendings []*pendingMsgIdx, onlyPendOnMem boo
 			}
 		}
 
-		if unPendIdxSet, ok := r.unPendMsgIdxes[pending.seq]; ok {
-			if _, ok = unPendIdxSet[pending.idxOffset]; ok {
-				continue
-			}
-		}
-
 		pendingIdxSet, ok := r.pendingMsgIdxes[pending.seq]
 		if !ok {
 			pendingIdxSet = map[uint32]struct{}{}
@@ -219,8 +213,8 @@ func (r *ConsumePendingRec) pending(pendings []*pendingMsgIdx, onlyPendOnMem boo
 			if _, ok = pendingIdxSet[pending.idxOffset]; ok {
 				continue
 			}
-			pendingIdxSet[pending.idxOffset] = struct{}{}
 		}
+		pendingIdxSet[pending.idxOffset] = struct{}{}
 
 		enqueued = append(enqueued, pending)
 	}
