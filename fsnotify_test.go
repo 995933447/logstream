@@ -23,9 +23,7 @@ func TestFsnotify(t *testing.T) {
 					return
 				}
 				log.Println("event:", event)
-				if event.Has(fsnotify.Write) {
-					log.Println("modified file:", event.Name)
-				}
+				log.Println("modified file:", event.Name)
 			case err, ok := <-watcher.Errors:
 				if !ok {
 					return

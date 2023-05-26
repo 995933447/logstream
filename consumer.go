@@ -162,6 +162,7 @@ func (c *Consumer) subscribe() error {
 		}
 
 		if needSwitchNewFile {
+			_ = fileWatcher.Remove(c.idxFp.Name())
 			for {
 				if err = c.switchNextSeqFile(); err != nil {
 					if err == errSeqNotFound {
